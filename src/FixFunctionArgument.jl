@@ -17,10 +17,17 @@ module FixFunctionArgument
     @noinline function throw_too_few_args()
         throw(ArgumentError("too few positional arguments given in call of a `Fix`"))
     end
+    @noinline function throw_not_int()
+        throw(ArgumentError("the type parameter `N` must be an `Int`"))
+    end
     @noinline function throw_not_positive()
         throw(ArgumentError("the type parameter `N` must be greater than zero"))
     end
-    @inline function check_positive(n::Int)
+    @inline function check_positive(n)
+        if !(n isa Int)
+            throw_not_int()
+        end
+        n = n::Int
         if n < 1
             throw_not_positive()
         end
