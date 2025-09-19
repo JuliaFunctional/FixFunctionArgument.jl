@@ -24,6 +24,17 @@ using Test
     @testset "too few arguments in call" begin
         @test_throws ArgumentError Fix{10}(Returns(nothing), 7)(1, 2, 3)
     end
+    @testset "instance properties" begin
+        fixed = Fix1(sin, 0.3)
+        @testset "`propertynames`" begin
+            @test (:f, :x) === @inferred propertynames(fixed)
+            @test (:f, :x) === @inferred propertynames(fixed, false)
+            @test (:f, :x) === @inferred propertynames(fixed, true)
+        end
+        @testset "access to property that does not exist" begin
+            @test_throws Exception fixed.z
+        end
+    end
 end
 
 using Aqua: Aqua
