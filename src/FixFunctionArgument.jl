@@ -90,7 +90,7 @@ module FixFunctionArgument
     # Properties for compatility with `Base.Fix`
     const property_name_f = :f
     const property_name_x = :x
-    function Base.propertynames((@nospecialize fix::Fix), ::Bool = false)
+    Base.@nospecializeinfer function Base.propertynames((@nospecialize fix::Fix), ::Bool = false)
         (property_name_f, property_name_x)
     end
     function Base.getproperty(fix::Fix, name::Symbol)
