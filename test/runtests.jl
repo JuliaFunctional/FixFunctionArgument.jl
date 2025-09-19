@@ -13,6 +13,16 @@ using Test
     end
     @testset "basic" begin
         @test sin(0.3) === @inferred Fix1(sin, 0.3)()
+        @test (7 - 3) === @inferred Fix1(-, 7)(3)
+        @test (7 - 3) === @inferred Fix2(-, 3)(7)
+    end
+    @testset "invalid `N`" begin
+        for N ∈ (-1, 0, true)
+            @test_throws ArgumentError Fix{N}(+, 7)
+        end
+    end
+    @testset "too few arguments in call" begin
+        @test_throws ArgumentError Fix{10}(Returns(nothing), 7)(1, 2, 3)
     end
 end
 
