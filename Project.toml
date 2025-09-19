@@ -3,5 +3,9 @@ uuid = "cb811f43-9318-44bc-abfd-c6e87574dc10"
 authors = ["Neven Sajko <s@purelymail.com> and contributors"]
 version = "1.0.0"
 
+[deps]
+ZeroDimensionalArrays = "446293e6-c8ea-451e-b470-6510dab5ca7b"
+
 [compat]
+ZeroDimensionalArrays = "1.1"
 julia = "1.10"
