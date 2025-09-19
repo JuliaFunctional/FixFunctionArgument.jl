@@ -1,5 +1,5 @@
 module FixFunctionArgument
-    export Fix
+    export Fix, Fix1, Fix2
     using ZeroDimensionalArrays: ZeroDimArray, ZeroDimArrayInTypeParameter
     Base.@constprop :aggressive function tuple_up_to(tuple::Tuple, n::Int)
         tuple[1:n]
@@ -117,4 +117,16 @@ module FixFunctionArgument
         fixed_argument = fix.x
         callable(arg, fixed_argument; kwargs...)
     end
+    """
+        Fix1
+
+    Alias for `Fix{1}`. Stand-in replacement for `Base.Fix1`.
+    """
+    const Fix1 = Fix{1}
+    """
+        Fix2
+
+    Alias for `Fix{2}`. Stand-in replacement for `Base.Fix2`.
+    """
+    const Fix2 = Fix{2}
 end
