@@ -85,7 +85,7 @@ module FixFunctionArgument
         end
     end
     function get_n(::Fix{N}) where {N}
-        check_positive(N) - 1
+        check_positive(N)
     end
     # Properties for compatility with `Base.Fix`
     const property_name_f = :f
@@ -104,7 +104,7 @@ module FixFunctionArgument
     end
     # Make `Fix` callable
     function (fix::Fix)(args::Vararg{Any, TupleLength}; kwargs...) where {TupleLength}
-        n = get_n(fix)
+        n = get_n(fix) - 1
         if length(args) < n
             throw_too_few_args()
         end
@@ -123,6 +123,18 @@ module FixFunctionArgument
         callable = fix.f
         fixed_argument = fix.x
         callable(arg, fixed_argument; kwargs...)
+    end
+    function Base.show(io::IO, fix::Fix)
+        n = get_n(fix)
+        callable = fix.f
+        fixed_argument = fix.x
+        show(io, Fix{n})
+        print(io, '(')
+        show(io, callable)
+        print(io, ',')
+        print(io, ' ')
+        show(io, fixed_argument)
+        print(io, ')')
     end
     """
         Fix1
