@@ -35,6 +35,16 @@ using Test
             @test_throws Exception fixed.z
         end
     end
+    @testset "two-argument `show` roundtripping" begin
+        for N ∈ (1, 2, 3, 999)
+            for x ∈ (Fix{N}(convert, Float32), Fix{N}(Int, 7))
+                @test x === (eval ∘ Meta.parse ∘ repr)(x)
+            end
+            let x = Fix{N}(Int, big(7))
+                @test repr(x) == (repr ∘ eval ∘ Meta.parse ∘ repr)(x)
+            end
+        end
+    end
 end
 
 using Aqua: Aqua
