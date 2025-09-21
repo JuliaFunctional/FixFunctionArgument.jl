@@ -34,3 +34,37 @@ julia> using FixFunctionArgument
 julia> sizeof(Fix1(convert, Float32))
 0
 ```
+
+Here is a more concrete, albeit artificial, example of a performance difference between `Fix` and `Base.Fix`.
+
+```julia
+# calls `f` eight times
+function iterated_function_8(f::Func, x) where {Func}
+    f = f ∘ f
+    f = f ∘ f
+    f = f ∘ f
+    f(x)
+end
+
+# like `identity`, but should not inline
+@noinline function identity_noinline(x)
+    x
+end
+
+# only does calling, for benchmarking call/stack overhead
+function identity_noinline_iterated(x)
+    iterated_function_8(identity_noinline, x)
+end
+
+using BenchmarkTools, FixFunctionArgument
+
+x = Fix1(convert, Float32)
+y = Base.Fix1(convert, Float32)
+
+@btime identity_noinline_iterated($x)     #  1.292 ns (0 allocations: 0 bytes)
+@btime identity_noinline_iterated($y)     # 16.222 ns (1 allocation: 16 bytes)
+
+@code_typed identity_noinline_iterated(x)  # shows that the entire call gets constant folded away
+```
+
+Interpretation: for `Fix`, unlike for `Base.Fix`, the `identity_noinline_iterated` call has zero cost, because the entire call gets constant folded away.
